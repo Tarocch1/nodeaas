@@ -1,20 +1,20 @@
-import path from 'path';
-import { merge } from 'lodash-es';
-import { logger } from './logger';
+import path from 'path'
+import { merge } from 'lodash-es'
+import { logger } from './logger'
 
 export type THttpFunctionConfig = {
-  module: string;
-  timeout?: number;
-};
+  module: string
+  timeout?: number
+}
 
 export type TConfig = {
   http: {
-    port: number;
-    host: string;
-    prefix: string;
-  };
-  httpFunctions: THttpFunctionConfig[];
-};
+    port: number
+    host: string
+    prefix: string
+  }
+  httpFunctions: THttpFunctionConfig[]
+}
 
 export const defaultConfig: TConfig = {
   http: {
@@ -23,23 +23,24 @@ export const defaultConfig: TConfig = {
     prefix: '',
   },
   httpFunctions: [],
-};
+}
 
 export class Config {
-  config: TConfig;
+  config: TConfig
 
-  initConfig(configPath: string) {
+  async initConfig(configPath: string): Promise<void> {
     try {
       const fullPath = path.isAbsolute(configPath)
         ? configPath
-        : path.join(process.cwd(), configPath);
-      const config = require(fullPath);
-      this.config = merge(defaultConfig, config);
+        : path.join(process.cwd(), configPath)
+
+      const config = await import(fullPath)
+      this.config = merge(defaultConfig, config.default)
     } catch (err) {
-      logger.log(`initConfig fail. ${err.message}`);
-      process.exit(1);
+      logger.log(`initConfig fail. ${err.message}`)
+      process.exit(1)
     }
   }
 }
 
-export const config = new Config();
+export const config = new Config()

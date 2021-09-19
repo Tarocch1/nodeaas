@@ -1,18 +1,18 @@
-import { Command } from 'commander';
-const { version } = require('../../package.json');
+import { Command } from 'commander'
+import { version } from '../../package.json'
 
 function initCommand() {
-  const command = new Command();
-  command.version(version, '-v, --version');
+  const command = new Command()
+  command.version(version, '-v, --version')
 
   command.option(
     '-c, --config [path]',
     'config file path',
     './nodeaas.config.js'
-  );
-  command.parse();
+  )
+  command.parse()
 
-  return command;
+  return command
 }
 
-export const command = initCommand();
+export const command = initCommand()
