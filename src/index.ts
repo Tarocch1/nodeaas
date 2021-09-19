@@ -1,11 +1,8 @@
-import { getCommand } from './lib/command';
-import { Logger } from './lib/logger';
+import { command } from './lib/command';
+import { config } from './lib/config';
 
 function start() {
-  const command = getCommand()
-  const logger = new Logger({
-    module: 'main',
-  });
+  config.initConfig(command.opts().config);
 }
 
 start();

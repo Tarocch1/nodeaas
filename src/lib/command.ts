@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 const { version } = require('../../package.json');
 
-export function getCommand() {
+function initCommand() {
   const command = new Command();
   command.version(version, '-v, --version');
 
@@ -14,3 +14,5 @@ export function getCommand() {
 
   return command;
 }
+
+export const command = initCommand();

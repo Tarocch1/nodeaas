@@ -6,17 +6,24 @@ export const defaultOption = {
   dateFormat: 'YYYY-MM-DD HH:mm:ss',
 };
 
-export type LoggerOption = typeof defaultOption;
+export type TLoggerOption = typeof defaultOption;
 
 export class Logger {
-  constructor(option: Partial<LoggerOption> = defaultOption) {
+  constructor(option: AtLeast<TLoggerOption, 'module'> = defaultOption) {
     this.option = merge(defaultOption, option);
   }
 
-  private option: LoggerOption;
+  private option: TLoggerOption;
 
   log(message: string) {
     const { dateFormat, module } = this.option;
-    console.log(`[${dayjs().format(dateFormat)}] [${module}] ${message}`);
+    const messages = message.split('\n');
+    messages.forEach((msg) => {
+      console.log(`[${dayjs().format(dateFormat)}] [${module}] ${msg}`);
+    });
   }
 }
+
+export const logger = new Logger({
+  module: 'main',
+});

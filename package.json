@@ -14,7 +14,7 @@
     "nodeaas": "./bin/nodeaas.js"
   },
   "scripts": {
-    "build": "ncc build -m -o dist src/index.ts"
+    "build": "ncc build -a -m -o dist src/index.ts"
   },
   "dependencies": {
     "commander": "^8.2.0",
