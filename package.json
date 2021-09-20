@@ -24,7 +24,7 @@
   },
   "lint-staged": {
     "src/**/*.ts": [
-      "eslint --fix",
+      "eslint --fix --max-warnings=0",
       "git add"
     ]
   },
@@ -34,6 +34,7 @@
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {
+    "@tarocch1/eslint-config": "^1.0.0",
     "@types/lodash-es": "^4.17.5",
     "@types/node": "^16.9.2",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
@@ -41,6 +42,7 @@
     "@vercel/ncc": "^0.31.1",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^4.3.8",
     "lint-staged": "^11.1.2",
