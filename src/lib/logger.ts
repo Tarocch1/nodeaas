@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { merge } from 'lodash-es'
+import { merge, cloneDeep } from 'lodash-es'
 
 export const defaultOption = {
   module: '',
@@ -10,14 +10,15 @@ export type TLoggerOption = typeof defaultOption
 
 export class Logger {
   constructor(option: AtLeast<TLoggerOption, 'module'> = defaultOption) {
-    this.option = merge(defaultOption, option)
+    this.option = merge(cloneDeep(defaultOption), option)
   }
 
   private option: TLoggerOption
 
-  log(message: string): void {
+  log(message: string, data?: Record<string, unknown>): void {
     const { dateFormat, module } = this.option
-    const messages = message.split('\n')
+    const extra = data ? ` - METADATA: ${JSON.stringify(data)}` : ''
+    const messages = `${message}${extra}`.split('\n')
     messages.forEach((msg) => {
       console.log(`[${dayjs().format(dateFormat)}] [${module}] ${msg}`)
     })

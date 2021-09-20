@@ -5,5 +5,6 @@ A simple Node.js FaaS framework.
 ## TODO
 
 - [x] Configurable
-- [ ] Http trigger
+- [x] Http trigger
 - [ ] Cron trigger
+- [ ] Node.js SDK

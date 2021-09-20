@@ -4,6 +4,7 @@ import { logger } from './logger'
 
 export type THttpFunctionConfig = {
   module: string
+  path: RegExp
   timeout?: number
 }
 
@@ -36,8 +37,13 @@ export class Config {
 
       const config = await import(fullPath)
       this.config = merge(defaultConfig, config.default)
-    } catch (err) {
-      logger.log(`initConfig fail. ${err.message}`)
+      logger.log(`initConfig success.`, {
+        config: this.config,
+      })
+    } catch (e) {
+      logger.log(`initConfig error. ${e}`, {
+        stack: e.stack,
+      })
       process.exit(1)
     }
   }
