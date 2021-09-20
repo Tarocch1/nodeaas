@@ -3,6 +3,7 @@ import { merge } from 'lodash-es'
 import { logger } from './logger'
 
 export type THttpFunctionConfig = {
+  name: string
   module: string
   path: RegExp
   timeout?: number

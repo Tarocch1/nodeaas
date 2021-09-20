@@ -6,6 +6,7 @@ module.exports = {
   },
   httpFunctions: [
     {
+      name: 'test',
       module: '/path/to/module.js',
       path: /^\/path\/to\/invoke/,
       timeout: 60 * 1000,

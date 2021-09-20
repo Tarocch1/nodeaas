@@ -1,4 +1,5 @@
 import { fork, Serializable } from 'child_process'
+import { Logger } from './logger'
 
 export enum RUNNER_STATUS {
   Success = 1,
@@ -13,14 +14,24 @@ export type TRUNNER_RESULT = {
 }
 
 export function run(
+  name: string,
   module: string,
-  payload: Serializable,
-  timeout: number
+  timeout: number,
+  payload: Serializable
 ): Promise<TRUNNER_RESULT> {
+  const logger = new Logger({
+    module: name,
+  })
+
   return new Promise((resolve) => {
     let handled = false
     const subprocess = fork(module, {
       serialization: 'advanced',
+      silent: true,
+    })
+
+    subprocess.stdout.on('data', (chunk: Buffer) => {
+      logger.log(chunk.toString().replace(/\n$/, ''))
     })
 
     const timer = setTimeout(() => {
@@ -56,15 +67,18 @@ export function run(
       clearTimeout(timer)
       subprocess.removeAllListeners()
       if (code !== null && code != 0) {
+        // 函数非 0 退出
         resolve({
           status: RUNNER_STATUS.Error,
           error: new Error(`Child process exited with code ${code}.`),
         })
       } else if (code === 0) {
+        // 函数未返回数据直接退出
         resolve({
           status: RUNNER_STATUS.Success,
         })
       } else {
+        // 函数进程被杀
         resolve({
           status: RUNNER_STATUS.Error,
           error: new Error('Child process terminated.'),

@@ -38,14 +38,16 @@ async function handler(
     )
     if (func) {
       const runnerResult = await run(
+        func.name,
         func.module,
-        payload,
-        func.timeout || 60 * 1000
+        func.timeout || 60 * 1000,
+        payload
       )
       switch (runnerResult.status) {
         case RUNNER_STATUS.Success: {
           logger.log(`http function success.`, {
             url: request.url,
+            config: func,
           })
           const result: THttpResult | undefined = runnerResult.result
           if (!result) {
@@ -64,6 +66,7 @@ async function handler(
         case RUNNER_STATUS.Timeout: {
           logger.log(`http function timeout.`, {
             url: request.url,
+            config: func,
           })
           response.statusCode = 504
           response.end()
@@ -73,6 +76,7 @@ async function handler(
           const e = runnerResult.error
           logger.log(`http function error. ${e}`, {
             url: request.url,
+            config: func,
           })
           response.statusCode = 500
           response.end()

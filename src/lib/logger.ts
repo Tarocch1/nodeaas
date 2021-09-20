@@ -1,3 +1,4 @@
+import { inspect } from 'util'
 import dayjs from 'dayjs'
 import { merge, cloneDeep } from 'lodash-es'
 
@@ -17,7 +18,16 @@ export class Logger {
 
   log(message: string, data?: Record<string, unknown>): void {
     const { dateFormat, module } = this.option
-    const extra = data ? ` - METADATA: ${JSON.stringify(data)}` : ''
+    const extra = data
+      ? ` - METADATA: ${inspect(data, {
+          depth: Infinity,
+          colors: true,
+          maxArrayLength: Infinity,
+          maxStringLength: Infinity,
+          breakLength: Infinity,
+          compact: Infinity,
+        })}`
+      : ''
     const messages = `${message}${extra}`.split('\n')
     messages.forEach((msg) => {
       console.log(`[${dayjs().format(dateFormat)}] [${module}] ${msg}`)
