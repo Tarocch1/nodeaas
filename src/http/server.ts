@@ -33,6 +33,10 @@ async function handler(
   })
   try {
     const payload = await getPayload(request)
+    logger.log('http function payload.', {
+      url: request.url,
+      payload,
+    })
     const func = config.config.httpFunctions.find((f) =>
       f.path.test(request.url)
     )
