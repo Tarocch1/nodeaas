@@ -1,26 +1,7 @@
 import http from 'http'
 import { URLSearchParams } from 'url'
-import { logger } from './'
-
-export type TBody = Record<string, unknown> | Buffer
-export type THttpPayload = Pick<
-  http.IncomingMessage,
-  | 'aborted'
-  | 'httpVersion'
-  | 'httpVersionMajor'
-  | 'httpVersionMinor'
-  | 'complete'
-  | 'headers'
-  | 'rawHeaders'
-  | 'trailers'
-  | 'rawTrailers'
-  | 'method'
-  | 'url'
-> & {
-  ip: string
-  ips: string[]
-  body: TBody
-}
+import { logger } from '@src/http'
+import { THttpPayload, THttpBody } from '@type/http.type'
 
 export async function getPayload(
   request: http.IncomingMessage
@@ -70,7 +51,7 @@ function getIp(request: http.IncomingMessage): [string, string[]] {
   return [ip, ips]
 }
 
-function getBody(request: http.IncomingMessage): Promise<TBody> {
+function getBody(request: http.IncomingMessage): Promise<THttpBody> {
   return new Promise((resolve, reject) => {
     const body = []
     request
@@ -91,7 +72,7 @@ function getBody(request: http.IncomingMessage): Promise<TBody> {
   })
 }
 
-function decodeBody(buffer: Buffer, request: http.IncomingMessage): TBody {
+function decodeBody(buffer: Buffer, request: http.IncomingMessage): THttpBody {
   try {
     const contentType = request.headers['content-type']
     if (contentType) {

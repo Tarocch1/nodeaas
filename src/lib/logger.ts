@@ -1,13 +1,12 @@
 import { inspect } from 'util'
 import dayjs from 'dayjs'
 import { merge, cloneDeep } from 'lodash-es'
+import { TLoggerOption } from '@type/logger.type'
 
-export const defaultOption = {
+export const defaultOption: TLoggerOption = {
   module: '',
   dateFormat: 'YYYY-MM-DD HH:mm:ss',
 }
-
-export type TLoggerOption = typeof defaultOption
 
 export class Logger {
   constructor(option: AtLeast<TLoggerOption, 'module'> = defaultOption) {

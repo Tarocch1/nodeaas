@@ -1,24 +1,13 @@
 import { fork, Serializable } from 'child_process'
-import { Logger } from './logger'
-
-export enum RUNNER_STATUS {
-  Success = 1,
-  Error,
-  Timeout,
-}
-
-export type TRUNNER_RESULT = {
-  status: RUNNER_STATUS
-  result?: unknown
-  error?: Error
-}
+import { Logger } from '@src/lib/logger'
+import { TRunnerResult, RUNNER_STATUS } from '@type/runner.type'
 
 export function run(
   name: string,
   module: string,
   timeout: number,
   payload: Serializable
-): Promise<TRUNNER_RESULT> {
+): Promise<TRunnerResult> {
   const logger = new Logger({
     module: name,
   })

@@ -1,14 +1,10 @@
 import http from 'http'
-import { config } from '../lib/config'
-import { RUNNER_STATUS, run } from '../lib/runner'
-import { logger } from './'
-import { getPayload } from './payload'
-
-export type THttpResult = {
-  statusCode?: number
-  headers?: NodeJS.Dict<string | string[]>
-  body?: string | Buffer
-}
+import { config } from '@src/lib/config'
+import { run } from '@src/lib/runner'
+import { logger } from '@src/http'
+import { getPayload } from '@src/http/payload'
+import { RUNNER_STATUS } from '@type/runner.type'
+import { THttpResult } from '@type/http.type'
 
 export function createServer(): void {
   try {

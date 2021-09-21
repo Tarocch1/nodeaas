@@ -1,6 +1,6 @@
-import { config } from '../lib/config'
-import { Logger } from '../lib/logger'
-import { createServer } from './server'
+import { config } from '@src/lib/config'
+import { Logger } from '@src/lib/logger'
+import { createServer } from '@src/http/server'
 
 export const logger = new Logger({
   module: 'http',

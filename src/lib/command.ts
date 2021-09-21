@@ -1,5 +1,5 @@
 import { Command } from 'commander'
-import { version } from '../../package.json'
+import { version } from '@/package.json'
 
 function initCommand() {
   const command = new Command()

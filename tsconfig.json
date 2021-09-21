@@ -4,6 +4,12 @@
     "target": "ES2015",
     "esModuleInterop": true,
     "moduleResolution": "Node",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./*"],
+      "@src/*": ["./src/*"],
+      "@type/*": ["./src/type/*"]
+    }
   }
 }

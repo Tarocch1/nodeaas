@@ -1,22 +1,7 @@
 import path from 'path'
 import { merge } from 'lodash-es'
-import { logger } from './logger'
-
-export type THttpFunctionConfig = {
-  name: string
-  module: string
-  path: RegExp
-  timeout?: number
-}
-
-export type TConfig = {
-  http: {
-    port: number
-    host: string
-    prefix: string
-  }
-  httpFunctions: THttpFunctionConfig[]
-}
+import { logger } from '@src/lib/logger'
+import { TConfig } from '@type/config.type'
 
 export const defaultConfig: TConfig = {
   http: {

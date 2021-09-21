@@ -34,7 +34,7 @@
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {
-    "@tarocch1/eslint-config": "^1.0.0",
+    "@tarocch1/eslint-config": "^1.0.1",
     "@types/lodash-es": "^4.17.5",
     "@types/node": "^16.9.2",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
@@ -42,6 +42,7 @@
     "@vercel/ncc": "^0.31.1",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-typescript": "^2.5.0",
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^4.3.8",
