@@ -29,12 +29,15 @@
     ]
   },
   "dependencies": {
+    "base64url": "^3.0.1",
     "commander": "^8.2.0",
+    "cookie": "^0.4.1",
     "dayjs": "^1.10.7",
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {
     "@tarocch1/eslint-config": "^1.0.1",
+    "@types/cookie": "^0.4.1",
     "@types/lodash-es": "^4.17.5",
     "@types/node": "^16.9.2",
     "@typescript-eslint/eslint-plugin": "^4.31.1",

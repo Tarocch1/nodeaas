@@ -1,10 +1,6 @@
-import { THttpFunctionConfig } from '@type/http.type'
+import { THttpConfig, THttpFunctionConfig } from '@type/http.type'
 
 export type TConfig = {
-  http: {
-    port: number
-    host: string
-    prefix: string
-  }
+  http: THttpConfig
   httpFunctions: THttpFunctionConfig[]
 }

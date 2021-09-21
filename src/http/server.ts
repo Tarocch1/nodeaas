@@ -2,6 +2,7 @@ import http from 'http'
 import { config } from '@src/lib/config'
 import { logger } from '@src/http'
 import { getPayload } from '@src/http/payload'
+import { handleJwt } from '@src/http/jwt'
 import { runFunction } from '@src/http/run'
 import { THttpCtx } from '@type/http.type'
 
@@ -33,7 +34,10 @@ async function handler(
     }
     getConfig(ctx)
     await getPayload(ctx)
+    handleJwt(ctx)
     await runFunction(ctx)
+    handleJwt(ctx)
+    sendReply(ctx)
   } catch (e) {
     logger.log(`http handler error. ${e}`, {
       url: request.url,
@@ -59,4 +63,19 @@ function getConfig(ctx: THttpCtx): void {
     response.statusCode = 404
     response.end()
   }
+}
+
+function sendReply(ctx: THttpCtx): void {
+  if (ctx.response.writableEnded) return
+  const { response, result, payload } = ctx
+  logger.log(`send reply.`, {
+    url: payload.url,
+    result,
+  })
+  response.statusCode = result.statusCode || 200
+  result.headers &&
+    Object.entries(result.headers).forEach(([key, value]) => {
+      response.setHeader(key, value)
+    })
+  response.end(result.body)
 }

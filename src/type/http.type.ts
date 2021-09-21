@@ -1,10 +1,12 @@
 import http from 'http'
+import { CookieSerializeOptions } from 'cookie'
 
 export type THttpFunctionConfig = {
   name: string
   module: string
   path: RegExp
   timeout?: number
+  jwt?: JWT_METHOD
 }
 
 export type THttpBody = Record<string, unknown> | Buffer
@@ -25,6 +27,7 @@ export type THttpPayload = Pick<
   ip: string
   ips: string[]
   body: THttpBody
+  jwt?: Record<string, unknown>
 }
 
 export type THttpResult = {
@@ -39,4 +42,30 @@ export type THttpCtx = {
   payload?: THttpPayload
   config?: THttpFunctionConfig
   result?: THttpResult
+}
+
+export type TJwtConfig = {
+  key: string
+  location: JWT_LOCATION
+  name?: string
+  cookie?: CookieSerializeOptions
+}
+
+export type THttpConfig = {
+  port: number
+  host: string
+  prefix: string
+  jwt?: TJwtConfig
+}
+
+export enum JWT_LOCATION {
+  Cookie = 'cookie',
+  Header = 'header',
+  Param = 'param',
+}
+
+export enum JWT_METHOD {
+  Sign = 'sign',
+  Verify = 'verify',
+  Refresh = 'refresh',
 }

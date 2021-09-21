@@ -5,7 +5,7 @@ import { RUNNER_STATUS } from '@type/runner.type'
 
 export async function runFunction(ctx: THttpCtx): Promise<void> {
   if (ctx.response.writableEnded) return
-  const { request, response, config, payload } = ctx
+  const { request, config, payload } = ctx
   const runnerResult = await run(
     config.name,
     config.module,
@@ -19,18 +19,14 @@ export async function runFunction(ctx: THttpCtx): Promise<void> {
         config,
       })
       const result: THttpResult | undefined = runnerResult.result
-      if (!result) {
+      if (result) {
+        ctx.result = result
+      } else {
         // 函数未返回数据直接退出
-        response.statusCode = 200
-        response.end()
-        return
+        ctx.result = {
+          statusCode: 200,
+        }
       }
-      response.statusCode = result.statusCode || 200
-      result.headers &&
-        Object.entries(result.headers).forEach(([key, value]) => {
-          response.setHeader(key, value)
-        })
-      response.end(result.body)
       break
     }
     case RUNNER_STATUS.Timeout: {
@@ -38,8 +34,9 @@ export async function runFunction(ctx: THttpCtx): Promise<void> {
         url: request.url,
         config,
       })
-      response.statusCode = 504
-      response.end()
+      ctx.result = {
+        statusCode: 504,
+      }
       break
     }
     case RUNNER_STATUS.Error: {
@@ -48,8 +45,9 @@ export async function runFunction(ctx: THttpCtx): Promise<void> {
         url: request.url,
         config,
       })
-      response.statusCode = 500
-      response.end()
+      ctx.result = {
+        statusCode: 500,
+      }
       break
     }
     default:
