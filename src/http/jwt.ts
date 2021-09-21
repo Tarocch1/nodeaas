@@ -39,7 +39,7 @@ function beforeHandler(ctx: THttpCtx): void {
 }
 
 function afterHandler(ctx: THttpCtx): void {
-  const { response, payload } = ctx
+  const { response, payload, result } = ctx
   switch (ctx.config.jwt) {
     case JWT_METHOD.Sign:
     case JWT_METHOD.Refresh: {
@@ -52,18 +52,37 @@ function afterHandler(ctx: THttpCtx): void {
         return
       }
       const token = sign(ctx.result.body as string)
-      ctx.result = {
-        statusCode: 200,
-        headers: {
-          'Set-Cookie': serialize(
-            config.config.http.jwt.name,
-            token,
-            config.config.http.jwt.cookie
-          ),
-        },
-        body: JSON.stringify({
+      const cookie = serialize(
+        config.config.http.jwt.name,
+        token,
+        config.config.http.jwt.cookie
+      )
+      if (result.headers) {
+        if (result.headers['Set-Cookie']) {
+          if (Array.isArray(result.headers['Set-Cookie'])) {
+            result.headers['Set-Cookie'].push(cookie)
+          } else {
+            result.headers['Set-Cookie'] = [
+              result.headers['Set-Cookie'],
+              cookie,
+            ]
+          }
+        } else {
+          result.headers['Set-Cookie'] = cookie
+        }
+      } else {
+        result.headers = {
+          'Set-Cookie': cookie,
+        }
+      }
+      if (result.body) {
+        if (typeof result.body === 'string') {
+          result.body = result.body.replace(/__token__/g, token)
+        }
+      } else {
+        result.body = JSON.stringify({
           data: token,
-        }),
+        })
       }
       break
     }
