@@ -32,3 +32,11 @@ export type THttpResult = {
   headers?: NodeJS.Dict<string | string[]>
   body?: string | Buffer
 }
+
+export type THttpCtx = {
+  request: http.IncomingMessage
+  response: http.ServerResponse
+  payload?: THttpPayload
+  config?: THttpFunctionConfig
+  result?: THttpResult
+}

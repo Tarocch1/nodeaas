@@ -1,11 +1,11 @@
 import http from 'http'
 import { URLSearchParams } from 'url'
 import { logger } from '@src/http'
-import { THttpPayload, THttpBody } from '@type/http.type'
+import { THttpCtx, THttpPayload, THttpBody } from '@type/http.type'
 
-export async function getPayload(
-  request: http.IncomingMessage
-): Promise<THttpPayload> {
+export async function getPayload(ctx: THttpCtx): Promise<void> {
+  if (ctx.response.writableEnded) return
+  const { request } = ctx
   const payload: THttpPayload = {
     aborted: request.aborted,
     httpVersion: request.httpVersion,
@@ -26,10 +26,15 @@ export async function getPayload(
   const [ip, ips] = getIp(request)
   payload.ip = ip
   payload.ips = ips
-
   payload.body = await getBody(request)
 
-  return payload
+  logger.log('http function payload.', {
+    url: request.url,
+    payload,
+  })
+
+  ctx.payload = payload
+  return
 }
 
 function getIp(request: http.IncomingMessage): [string, string[]] {
