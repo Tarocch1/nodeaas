@@ -4,7 +4,7 @@ WORKDIR /nodeaas
 COPY . .
 
 RUN set -ex && \
-    npm ci
+    npm ci && \
     npm run build
 
 FROM node:lts-alpine
