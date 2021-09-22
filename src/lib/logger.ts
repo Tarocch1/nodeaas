@@ -18,9 +18,9 @@ export class Logger {
   log(message: string, data?: Record<string, unknown>): void {
     const { dateFormat, module } = this.option
     const extra = data
-      ? ` - METADATA: ${inspect(data, {
+      ? ` - METADATA - ${inspect(data, {
           depth: Infinity,
-          colors: true,
+          colors: false,
           maxArrayLength: Infinity,
           maxStringLength: Infinity,
           breakLength: Infinity,
