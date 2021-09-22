@@ -17,4 +17,4 @@ COPY nodeaas.config.js .
 RUN set -ex && \
     apk --no-cache add ca-certificates
 
-CMD ["node", "/nodeaas/index.js", "-c=/nodeaas/nodeaas.config.js"]
+CMD ["node", "/nodeaas/index.js", "-c", "/nodeaas/nodeaas.config.js"]
