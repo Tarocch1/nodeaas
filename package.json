@@ -13,9 +13,13 @@
   "bin": {
     "nodeaas": "./bin/nodeaas.js"
   },
+  "files": [
+    "bin",
+    "dist"
+  ],
   "scripts": {
     "build": "ncc build -a -m -o dist src/index.ts",
-    "lint": "eslint --fix 'src/**/*.ts'"
+    "lint": "eslint --fix 'src/**/*.ts' 'packages/**/*.ts'"
   },
   "husky": {
     "hooks": {
@@ -24,6 +28,10 @@
   },
   "lint-staged": {
     "src/**/*.ts": [
+      "eslint --fix --max-warnings=0",
+      "git add"
+    ],
+    "packages/**/*.ts": [
       "eslint --fix --max-warnings=0",
       "git add"
     ]

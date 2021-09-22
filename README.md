@@ -7,4 +7,4 @@ A simple Node.js FaaS framework.
 - [x] Configurable
 - [x] Http trigger
 - [ ] Cron trigger
-- [ ] Node.js SDK
+- [x] Node.js SDK
