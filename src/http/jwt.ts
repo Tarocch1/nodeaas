@@ -40,7 +40,7 @@ function beforeHandler(ctx: THttpCtx): void {
 }
 
 function afterHandler(ctx: THttpCtx): void {
-  const { response, payload, result } = ctx
+  const { payload, result } = ctx
   switch (ctx.config.jwt) {
     case JWT_METHOD.Sign:
     case JWT_METHOD.Refresh: {
@@ -48,8 +48,6 @@ function afterHandler(ctx: THttpCtx): void {
         logger.log(`jwt ${ctx.config.jwt} fail.`, {
           url: payload.url,
         })
-        response.statusCode = 403
-        response.end()
         return
       }
       const token = sign(result.jwt)

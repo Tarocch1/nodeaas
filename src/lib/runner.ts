@@ -70,7 +70,7 @@ export function run(
         // 函数进程被杀
         resolve({
           status: RUNNER_STATUS.Error,
-          error: new Error('Child process terminated.'),
+          error: new Error('Child process killed.'),
         })
       }
     })
