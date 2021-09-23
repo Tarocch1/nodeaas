@@ -50,7 +50,7 @@ function afterHandler(ctx: THttpCtx): void {
         })
         return
       }
-      const token = sign(result.jwt)
+      const token = sign(JSON.stringify(result.jwt))
       const cookie = serialize(
         config.config.http.jwt.name,
         token,

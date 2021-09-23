@@ -24,7 +24,7 @@ export type THttpPayload = Pick<
 export type THttpResult = {
   statusCode?: number
   headers?: NodeJS.Dict<string | string[]>
-  jwt?: string
+  jwt?: Record<string, unknown>
   body?: string | Buffer
 }
 
