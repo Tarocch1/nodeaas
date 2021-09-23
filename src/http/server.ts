@@ -59,8 +59,21 @@ async function handler(
 function getConfig(ctx: THttpCtx): THttpCtx {
   if (ctx.response.writableEnded) return ctx
   const { request, response } = ctx
+  let path = request.url
+  if (config.config.http.prefix) {
+    if (!path.startsWith(config.config.http.prefix)) {
+      logger.log(`url doesn't match the prefix.`, {
+        url: request.url,
+        prefix: config.config.http.prefix,
+      })
+      response.statusCode = 404
+      response.end()
+      return ctx
+    }
+    path = path.slice(config.config.http.prefix.length)
+  }
   const functionConfig = config.config.httpFunctions.find((f) =>
-    f.path.test(request.url)
+    f.path.test(path)
   )
   if (functionConfig) {
     ctx.config = functionConfig
