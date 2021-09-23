@@ -48,8 +48,8 @@ export type THttpCtx = {
 export type TJwtConfig = {
   key: string
   location: JWT_LOCATION
-  name?: string
-  cookie?: CookieSerializeOptions
+  name: string
+  cookie: CookieSerializeOptions
 }
 
 export type THttpConfig = {
