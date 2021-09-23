@@ -44,7 +44,7 @@ function afterHandler(ctx: THttpCtx): void {
   switch (ctx.config.jwt) {
     case JWT_METHOD.Sign:
     case JWT_METHOD.Refresh: {
-      if (ctx.result.statusCode !== 200) {
+      if (result.statusCode !== 200) {
         logger.log(`jwt ${ctx.config.jwt} fail.`, {
           url: payload.url,
         })
@@ -52,7 +52,7 @@ function afterHandler(ctx: THttpCtx): void {
         response.end()
         return
       }
-      const token = sign(ctx.result.body as string)
+      const token = sign(result.jwt)
       const cookie = serialize(
         config.config.http.jwt.name,
         token,
