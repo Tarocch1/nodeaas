@@ -3,8 +3,8 @@ import { logger } from '@src/http'
 import { THttpCtx, THttpResult } from '@type/http.type'
 import { RUNNER_STATUS } from '@type/runner.type'
 
-export async function runFunction(ctx: THttpCtx): Promise<void> {
-  if (ctx.response.writableEnded) return
+export async function runFunction(ctx: THttpCtx): Promise<THttpCtx> {
+  if (ctx.response.writableEnded) return ctx
   const { request, config, payload } = ctx
   const runnerResult = await run(
     config.name,
@@ -53,4 +53,5 @@ export async function runFunction(ctx: THttpCtx): Promise<void> {
     default:
       break
   }
+  return ctx
 }

@@ -9,9 +9,16 @@ import { THttpCtx } from '@type/http.type'
 export function createServer(): void {
   try {
     const server = http.createServer(handler)
-    server.listen(config.config.http.port, config.config.http.host)
-    logger.log(
-      `listening on ${config.config.http.host}:${config.config.http.port}.`
+    server.listen(
+      {
+        port: config.config.http.port,
+        host: config.config.http.host,
+      },
+      () => {
+        logger.log(
+          `listening on ${config.config.http.host}:${config.config.http.port}.`
+        )
+      }
     )
   } catch (e) {
     logger.log(`createServer error. ${e}`, {
@@ -32,12 +39,13 @@ async function handler(
       request,
       response,
     }
-    getConfig(ctx)
-    await getPayload(ctx)
-    handleJwt(ctx)
-    await runFunction(ctx)
-    handleJwt(ctx)
-    sendReply(ctx)
+    Promise.resolve(ctx)
+      .then(getConfig)
+      .then(getPayload)
+      .then(handleJwt)
+      .then(runFunction)
+      .then(handleJwt)
+      .then(sendReply)
   } catch (e) {
     logger.log(`http handler error. ${e}`, {
       url: request.url,
@@ -48,8 +56,8 @@ async function handler(
   }
 }
 
-function getConfig(ctx: THttpCtx): void {
-  if (ctx.response.writableEnded) return
+function getConfig(ctx: THttpCtx): THttpCtx {
+  if (ctx.response.writableEnded) return ctx
   const { request, response } = ctx
   const functionConfig = config.config.httpFunctions.find((f) =>
     f.path.test(request.url)
@@ -57,18 +65,19 @@ function getConfig(ctx: THttpCtx): void {
   if (functionConfig) {
     ctx.config = functionConfig
   } else {
-    logger.log(`unknown function.`, {
+    logger.log(`unknown http function.`, {
       url: request.url,
     })
     response.statusCode = 404
     response.end()
   }
+  return ctx
 }
 
 function sendReply(ctx: THttpCtx): void {
   if (ctx.response.writableEnded) return
   const { response, result, payload } = ctx
-  logger.log(`send reply.`, {
+  logger.log(`send http reply.`, {
     url: payload.url,
     result,
   })

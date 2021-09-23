@@ -3,8 +3,8 @@ import { URLSearchParams } from 'url'
 import { logger } from '@src/http'
 import { THttpCtx, THttpPayload, THttpBody } from '@type/http.type'
 
-export async function getPayload(ctx: THttpCtx): Promise<void> {
-  if (ctx.response.writableEnded) return
+export async function getPayload(ctx: THttpCtx): Promise<THttpCtx> {
+  if (ctx.response.writableEnded) return ctx
   const { request } = ctx
   const payload: THttpPayload = {
     aborted: request.aborted,
@@ -34,7 +34,7 @@ export async function getPayload(ctx: THttpCtx): Promise<void> {
   })
 
   ctx.payload = payload
-  return
+  return ctx
 }
 
 function getIp(request: http.IncomingMessage): [string, string[]] {

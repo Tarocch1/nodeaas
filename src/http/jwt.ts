@@ -7,10 +7,10 @@ import { config } from '@src/lib/config'
 import { logger } from '@src/http'
 import { THttpCtx, JWT_METHOD, JWT_LOCATION } from '@type/http.type'
 
-export function handleJwt(ctx: THttpCtx): void {
-  if (!config.config.http.jwt) return
-  if (ctx.response.writableEnded) return
-  if (!ctx.config.jwt) return
+export function handleJwt(ctx: THttpCtx): THttpCtx {
+  if (!config.config.http.jwt) return ctx
+  if (ctx.response.writableEnded) return ctx
+  if (!ctx.config.jwt) return ctx
   if (ctx.result) {
     // 函数运行之后
     afterHandler(ctx)
@@ -18,6 +18,7 @@ export function handleJwt(ctx: THttpCtx): void {
     // 函数运行之前
     beforeHandler(ctx)
   }
+  return ctx
 }
 
 function beforeHandler(ctx: THttpCtx): void {
