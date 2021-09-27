@@ -1,6 +1,6 @@
 {
   "name": "@tarocch1/nodeaas",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A simple Node.js FaaS framework.",
   "license": "MIT",
   "author": "Tarocch1 <huiben.fang@gmail.com> (https://github.com/Tarocch1)",
