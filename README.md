@@ -2,13 +2,6 @@
 
 A simple Node.js FaaS framework.
 
-## TODO
-
-- [x] Configurable
-- [x] Http trigger
-- [ ] Cron trigger
-- [x] Node.js SDK
-
 ## Install
 
 ```sh
@@ -83,7 +76,7 @@ refresh 表示刷新 token 的接口，函数返回 200 状态码时，系统自
 
 #### Function
 
-函数通过 child_process 创建，创建后，主进程会将请求上下文传递给函数，上下文内容包括：
+HTTP 函数通过 child_process 创建，创建后，主进程会将请求上下文传递给函数，上下文内容包括：
 
 ```ts
 export type THttpBody = Record<string, unknown> | Buffer
@@ -123,6 +116,33 @@ export type THttpResult = {
 
 其中，`jwt` 表示签名接口用于生成 token 的 payload 值。
 
+### Cron
+
+#### Config
+
+Cron 通过 `cronFunctions` 配置项配置，该配置是一个数组，每一项表示一个 cron 函数，结构如下：
+
+```ts
+export type TCronFunctionConfig = {
+  cron: string // cron 表达式，支持秒级
+  name: string // 函数名称
+  module: string // 函数 js 文件
+  timeout?: number // 超时时间，默认 60 秒
+}
+```
+
+#### Function
+
+Cron 函数通过 child_process 创建，创建后，主进程会将请求上下文传递给函数，上下文内容包括：
+
+```ts
+export type TCronPayload = {
+  time: Date
+}
+```
+
+函数接收到上下文参数后直接运行即可，无需返回值。
+
 ### SDK
 
 提供 sdk 供函数接入，使编写函数更方便。
@@ -150,4 +170,3 @@ handleHttp(function (payload) {
 })
 
 ```
-
