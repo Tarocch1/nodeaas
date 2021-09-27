@@ -5,11 +5,12 @@
     "esModuleInterop": true,
     "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
       "@src/*": ["./src/*"],
       "@type/*": ["./src/type/*"]
     }
-  }
+  },
+  "include": ["src/**/*.ts"]
 }
