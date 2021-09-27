@@ -10,6 +10,7 @@ export const defaultConfig: TConfig = {
     prefix: '',
   },
   httpFunctions: [],
+  cronFunctions: [],
 }
 
 export class Config {

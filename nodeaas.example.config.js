@@ -6,9 +6,17 @@ module.exports = {
   },
   httpFunctions: [
     {
-      name: 'test',
+      name: 'http test',
       module: '/path/to/module.js',
       path: /^\/path\/to\/invoke/,
+      timeout: 60 * 1000,
+    },
+  ],
+  cronFunctions: [
+    {
+      cron: '0 * * * * *',
+      name: 'cron test',
+      module: '/path/to/module.js',
       timeout: 60 * 1000,
     },
   ],

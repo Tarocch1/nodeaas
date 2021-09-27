@@ -5,4 +5,5 @@ module.exports = {
     prefix: '',
   },
   httpFunctions: [],
+  cronFunctions: []
 }
