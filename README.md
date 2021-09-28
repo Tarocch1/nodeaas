@@ -145,28 +145,4 @@ export type TCronPayload = {
 
 ### SDK
 
-提供 sdk 供函数接入，使编写函数更方便。
-
-```sh
-npm i @tarocch1/nodeaas-sdk
-```
-
-使用：
-
-```js
-const { handleHttp } = require('@tarocch1/nodeaas-sdk')
-
-handleHttp(function (payload) {
-  return {
-    statusCode: 200,
-    headers: {
-      'Content-Type': 'application/json',
-      'X-My-Header': payload.ip,
-    },
-    body: JSON.stringify({
-      data: {},
-    }),
-  }
-})
-
-```
+[https://github.com/Tarocch1/nodeaas/tree/main/packages/sdk](https://github.com/Tarocch1/nodeaas/tree/main/packages/sdk)
