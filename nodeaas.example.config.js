@@ -8,6 +8,7 @@ module.exports = {
     {
       name: 'http test',
       module: '/path/to/module.js',
+      method: 'GET',
       path: /^\/path\/to\/invoke/,
       timeout: 60 * 1000,
     },

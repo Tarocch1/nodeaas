@@ -60,6 +60,7 @@ function getConfig(ctx: THttpCtx): THttpCtx {
   if (ctx.response.writableEnded) return ctx
   const { request, response } = ctx
   let path = request.url
+  const method = request.method
   if (config.config.http.prefix) {
     if (!path.startsWith(config.config.http.prefix)) {
       logger.log(`url doesn't match the prefix.`, {
@@ -72,8 +73,8 @@ function getConfig(ctx: THttpCtx): THttpCtx {
     }
     path = path.slice(config.config.http.prefix.length)
   }
-  const functionConfig = config.config.httpFunctions.find((f) =>
-    f.path.test(path)
+  const functionConfig = config.config.httpFunctions.find(
+    (f) => f.path.test(path) && (f.method ? f.method === method : true)
   )
   if (functionConfig) {
     ctx.config = functionConfig

@@ -61,6 +61,7 @@ export type THttpFunctionConfig = {
   name: string // 函数名称
   module: string // 函数 js 文件
   path: RegExp // http 路由正则
+  method?: string // http method
   timeout?: number // 超时时间，默认 60 秒
   jwt?: JWT_METHOD // 接口的 jwt 功能
 }

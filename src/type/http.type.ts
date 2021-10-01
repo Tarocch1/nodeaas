@@ -5,6 +5,7 @@ export type THttpFunctionConfig = {
   name: string
   module: string
   path: RegExp
+  method?: string
   timeout?: number
   jwt?: JWT_METHOD
 }
