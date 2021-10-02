@@ -13,9 +13,9 @@ npm i @tarocch1/nodeaas-sdk
 ### HTTP
 
 ```js
-const { handleHttp } = require('@tarocch1/nodeaas-sdk')
+const { handle } = require('@tarocch1/nodeaas-sdk')
 
-handleHttp(function (payload) {
+handle(function (payload) {
   return {
     statusCode: 200,
     headers: {
@@ -32,9 +32,9 @@ handleHttp(function (payload) {
 ### Cron
 
 ```js
-const { handleCron } = require('@tarocch1/nodeaas-sdk')
+const { handle } = require('@tarocch1/nodeaas-sdk')
 
-handleCron(function (payload) {
+handle(function (payload) {
   console.log(payload.time)
 })
 ```

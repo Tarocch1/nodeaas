@@ -29,14 +29,15 @@ export declare type THttpResult = {
   jwt?: Record<string, unknown>
   body?: string | Buffer
 }
-export declare function handleHttp(
-  handler: (payload: THttpPayload) => THttpResult | Promise<THttpResult>
-): void
 
 export declare type TCronPayload = {
   time: Date
 }
-export declare function handleCron(
+
+export declare function handle(
+  handler: (payload: THttpPayload) => THttpResult | Promise<THttpResult>
+): void
+export declare function handle(
   handler: (payload: TCronPayload) => void | Promise<void>
 ): void
 
