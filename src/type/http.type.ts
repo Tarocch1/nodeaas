@@ -8,6 +8,7 @@ export type THttpFunctionConfig = {
   method?: string
   timeout?: number
   jwt?: JWT_METHOD
+  cors?: Record<string, string | string[]>
 }
 
 export type THttpBody = Record<string, unknown> | Buffer
@@ -33,7 +34,7 @@ export type THttpPayload = Pick<
 
 export type THttpResult = {
   statusCode?: number
-  headers?: NodeJS.Dict<string | string[]>
+  headers?: Record<string, string | string[]>
   jwt?: Record<string, unknown>
   body?: string | Buffer
 }
@@ -58,6 +59,7 @@ export type THttpConfig = {
   host: string
   prefix: string
   jwt?: TJwtConfig
+  cors?: Record<string, string | string[]>
 }
 
 export enum JWT_LOCATION {

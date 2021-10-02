@@ -4,6 +4,7 @@ import { logger } from '@src/http'
 import { getPayload } from '@src/http/payload'
 import { handleJwt } from '@src/http/jwt'
 import { runFunction } from '@src/http/run'
+import { cors } from '@src/http/cors'
 import { THttpCtx } from '@type/http.type'
 
 export function createServer(): void {
@@ -42,9 +43,11 @@ async function handler(
     Promise.resolve(ctx)
       .then(getConfig)
       .then(getPayload)
+      .then(cors)
       .then(handleJwt)
       .then(runFunction)
       .then(handleJwt)
+      .then(cors)
       .then(sendReply)
   } catch (e) {
     logger.log(`http handler error. ${e}`, {
@@ -61,6 +64,7 @@ function getConfig(ctx: THttpCtx): THttpCtx {
   const { request, response } = ctx
   let path = request.url
   const method = request.method
+  const corsMethod = request.headers['access-control-request-method']
   if (config.config.http.prefix) {
     if (!path.startsWith(config.config.http.prefix)) {
       logger.log(`url doesn't match the prefix.`, {
@@ -74,13 +78,17 @@ function getConfig(ctx: THttpCtx): THttpCtx {
     path = path.slice(config.config.http.prefix.length)
   }
   const functionConfig = config.config.httpFunctions.find(
-    (f) => f.path.test(path) && (f.method ? f.method === method : true)
+    (f) =>
+      f.path.test(path) &&
+      (f.method ? [method, corsMethod].includes(f.method) : true)
   )
   if (functionConfig) {
     ctx.config = functionConfig
   } else {
     logger.log(`unknown http function.`, {
       url: request.url,
+      method,
+      corsMethod,
     })
     response.statusCode = 404
     response.end()

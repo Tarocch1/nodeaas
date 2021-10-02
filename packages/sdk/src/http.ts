@@ -23,7 +23,7 @@ export type THttpPayload = Pick<
 
 export type THttpResult = {
   statusCode?: number
-  headers?: NodeJS.Dict<string | string[]>
+  headers?: Record<string, string | string[]>
   jwt?: Record<string, unknown>
   body?: string | Buffer
 }

@@ -28,6 +28,7 @@ export type THttpConfig = {
   host: string // 地址
   prefix: string // path 前缀
   jwt?: TJwtConfig // jwt 配置
+  cors?: Record<string, string | string[]> // cors 头
 }
 ```
 
@@ -64,6 +65,7 @@ export type THttpFunctionConfig = {
   method?: string // http method
   timeout?: number // 超时时间，默认 60 秒
   jwt?: JWT_METHOD // 接口的 jwt 功能
+  cors?: Record<string, string | string[]> // cors 头
 }
 ```
 
@@ -109,7 +111,7 @@ export type THttpPayload = Pick<
 ```ts
 export type THttpResult = {
   statusCode?: number
-  headers?: NodeJS.Dict<string | string[]>
+  headers?: Record<string, string | string[]>
   jwt?: Record<string, unknown>
   body?: string | Buffer
 }

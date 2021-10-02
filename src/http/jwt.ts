@@ -3,13 +3,14 @@ import { serialize, parse } from 'cookie'
 import crypto from 'crypto'
 import dayjs from 'dayjs'
 import base64url from 'base64url'
-import { config } from '@src/lib/config'
+import { config as globalConfig } from '@src/lib/config'
 import { logger } from '@src/http'
+import { setHeaders } from '@src/http/utils'
 import { THttpCtx, JWT_METHOD, JWT_LOCATION } from '@type/http.type'
 
 export function handleJwt(ctx: THttpCtx): THttpCtx {
-  if (!config.config.http.jwt) return ctx
   if (ctx.response.writableEnded) return ctx
+  if (!globalConfig.config.http.jwt) return ctx
   if (!ctx.config.jwt) return ctx
   if (ctx.result) {
     // 函数运行之后
@@ -22,8 +23,8 @@ export function handleJwt(ctx: THttpCtx): THttpCtx {
 }
 
 function beforeHandler(ctx: THttpCtx): void {
-  const { payload, response } = ctx
-  switch (ctx.config.jwt) {
+  const { payload, response, config } = ctx
+  switch (config.jwt) {
     case JWT_METHOD.Verify:
     case JWT_METHOD.Refresh:
       if (!verify(ctx)) {
@@ -40,40 +41,25 @@ function beforeHandler(ctx: THttpCtx): void {
 }
 
 function afterHandler(ctx: THttpCtx): void {
-  const { payload, result } = ctx
-  switch (ctx.config.jwt) {
+  const { payload, result, config } = ctx
+  switch (config.jwt) {
     case JWT_METHOD.Sign:
     case JWT_METHOD.Refresh: {
       if (result.statusCode !== 200) {
-        logger.log(`jwt ${ctx.config.jwt} fail.`, {
+        logger.log(`jwt ${config.jwt} fail.`, {
           url: payload.url,
         })
         return
       }
       const token = sign(JSON.stringify(result.jwt))
       const cookie = serialize(
-        config.config.http.jwt.name,
+        globalConfig.config.http.jwt.name,
         token,
-        config.config.http.jwt.cookie
+        globalConfig.config.http.jwt.cookie
       )
-      if (result.headers) {
-        if (result.headers['Set-Cookie']) {
-          if (Array.isArray(result.headers['Set-Cookie'])) {
-            result.headers['Set-Cookie'].push(cookie)
-          } else {
-            result.headers['Set-Cookie'] = [
-              result.headers['Set-Cookie'],
-              cookie,
-            ]
-          }
-        } else {
-          result.headers['Set-Cookie'] = cookie
-        }
-      } else {
-        result.headers = {
-          'Set-Cookie': cookie,
-        }
-      }
+      setHeaders(result, {
+        'Set-Cookie': cookie,
+      })
       if (result.body) {
         if (typeof result.body === 'string') {
           result.body = result.body.replace(/__token__/g, token)
@@ -98,7 +84,7 @@ function verify(ctx: THttpCtx): boolean {
       if (headerStr && payloadStr && signature) {
         const hmac = crypto.createHmac(
           'sha256',
-          base64url.toBuffer(config.config.http.jwt.key)
+          base64url.toBuffer(globalConfig.config.http.jwt.key)
         )
         const calculated = base64url.fromBase64(
           hmac.update([headerStr, payloadStr].join('.')).digest('base64')
@@ -127,10 +113,10 @@ function verify(ctx: THttpCtx): boolean {
 
 function getToken(ctx: THttpCtx): string | null {
   const { payload } = ctx
-  switch (config.config.http.jwt.location) {
+  switch (globalConfig.config.http.jwt.location) {
     case JWT_LOCATION.Cookie: {
       const parsedCookie = parse(payload.headers['cookie'])
-      return parsedCookie[config.config.http.jwt.name]
+      return parsedCookie[globalConfig.config.http.jwt.name]
     }
     case JWT_LOCATION.Header: {
       const auth = payload.headers['authorization']
@@ -138,7 +124,7 @@ function getToken(ctx: THttpCtx): string | null {
     }
     case JWT_LOCATION.Param: {
       const url = new URL(payload.url, 'http://127.0.0.1/')
-      return url.searchParams.get(config.config.http.jwt.name)
+      return url.searchParams.get(globalConfig.config.http.jwt.name)
     }
     default:
       break
@@ -155,7 +141,7 @@ function sign(jwtPayload: string): string {
   const payloadStr = base64url.encode(jwtPayload)
   const hmac = crypto.createHmac(
     'sha256',
-    base64url.toBuffer(config.config.http.jwt.key)
+    base64url.toBuffer(globalConfig.config.http.jwt.key)
   )
   const signature = base64url.fromBase64(
     hmac.update([headerStr, payloadStr].join('.')).digest('base64')
