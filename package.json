@@ -18,8 +18,8 @@
     "dist"
   ],
   "scripts": {
-    "prebuild": "tsc --noEmit",
-    "build": "node scripts/build.js",
+    "prebuild": "rm -rf dist",
+    "build": "ncc build src/index.ts -m -a --target es2020 -o dist",
     "lint": "eslint --fix 'src/**/*.ts' 'packages/**/*.ts'"
   },
   "husky": {
@@ -54,7 +54,7 @@
     "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
-    "esbuild": "^0.13.2",
+    "@vercel/ncc": "^0.31.1",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-import-resolver-typescript": "^2.5.0",
