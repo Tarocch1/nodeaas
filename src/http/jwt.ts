@@ -23,12 +23,13 @@ export function handleJwt(ctx: THttpCtx): THttpCtx {
 }
 
 function beforeHandler(ctx: THttpCtx): void {
-  const { payload, response, config } = ctx
+  const { requestID, payload, response, config } = ctx
   switch (config.jwt) {
     case JWT_METHOD.Verify:
     case JWT_METHOD.Refresh:
       if (!verify(ctx)) {
         logger.log(`jwt verify fail.`, {
+          requestID,
           url: payload.url,
         })
         response.statusCode = 401
@@ -41,12 +42,13 @@ function beforeHandler(ctx: THttpCtx): void {
 }
 
 function afterHandler(ctx: THttpCtx): void {
-  const { payload, result, config } = ctx
+  const { requestID, payload, result, config } = ctx
   switch (config.jwt) {
     case JWT_METHOD.Sign:
     case JWT_METHOD.Refresh: {
       if (result.statusCode !== 200) {
         logger.log(`jwt ${config.jwt} fail.`, {
+          requestID,
           url: payload.url,
         })
         return

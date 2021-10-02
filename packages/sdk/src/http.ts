@@ -15,6 +15,7 @@ export type THttpPayload = Pick<
   | 'method'
   | 'url'
 > & {
+  requestID: string
   ip: string
   ips: string[]
   body: THttpBody

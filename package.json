@@ -43,13 +43,15 @@
     "cookie": "^0.4.1",
     "cron-parser": "^4.0.0",
     "dayjs": "^1.10.7",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@tarocch1/eslint-config": "^1.0.1",
     "@types/cookie": "^0.4.1",
     "@types/lodash-es": "^4.17.5",
     "@types/node": "^16.9.2",
+    "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
     "esbuild": "^0.13.2",

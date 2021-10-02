@@ -5,7 +5,7 @@ import { RUNNER_STATUS } from '@type/runner.type'
 
 export async function runFunction(ctx: THttpCtx): Promise<THttpCtx> {
   if (ctx.response.writableEnded) return ctx
-  const { request, config, payload } = ctx
+  const { requestID, request, config, payload } = ctx
   const runnerResult = await run(
     config.name,
     config.module,
@@ -15,6 +15,7 @@ export async function runFunction(ctx: THttpCtx): Promise<THttpCtx> {
   switch (runnerResult.status) {
     case RUNNER_STATUS.Success: {
       logger.log(`http function run success.`, {
+        requestID,
         url: request.url,
         config,
       })
@@ -31,6 +32,7 @@ export async function runFunction(ctx: THttpCtx): Promise<THttpCtx> {
     }
     case RUNNER_STATUS.Timeout: {
       logger.log(`http function run timeout.`, {
+        requestID,
         url: request.url,
         config,
       })
@@ -42,6 +44,7 @@ export async function runFunction(ctx: THttpCtx): Promise<THttpCtx> {
     case RUNNER_STATUS.Error: {
       const e = runnerResult.error
       logger.log(`http function run error. ${e}`, {
+        requestID,
         url: request.url,
         config,
       })

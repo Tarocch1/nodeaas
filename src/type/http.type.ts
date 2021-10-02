@@ -26,6 +26,7 @@ export type THttpPayload = Pick<
   | 'method'
   | 'url'
 > & {
+  requestID: string
   ip: string
   ips: string[]
   body: THttpBody
@@ -40,6 +41,7 @@ export type THttpResult = {
 }
 
 export type THttpCtx = {
+  requestID: string
   request: http.IncomingMessage
   response: http.ServerResponse
   payload?: THttpPayload

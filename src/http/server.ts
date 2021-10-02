@@ -1,4 +1,5 @@
 import http from 'http'
+import { v4 as uuidv4 } from 'uuid'
 import { config } from '@src/lib/config'
 import { logger } from '@src/http'
 import { getPayload } from '@src/http/payload'
@@ -32,11 +33,14 @@ async function handler(
   request: http.IncomingMessage,
   response: http.ServerResponse
 ) {
+  const requestID = uuidv4()
   logger.log('receive http request.', {
+    requestID,
     url: request.url,
   })
   try {
     const ctx: THttpCtx = {
+      requestID,
       request,
       response,
     }
@@ -51,6 +55,7 @@ async function handler(
       .then(sendReply)
   } catch (e) {
     logger.log(`http handler error. ${e}`, {
+      requestID,
       url: request.url,
       stack: e.stack,
     })
@@ -61,13 +66,14 @@ async function handler(
 
 function getConfig(ctx: THttpCtx): THttpCtx {
   if (ctx.response.writableEnded) return ctx
-  const { request, response } = ctx
+  const { requestID, request, response } = ctx
   let path = request.url
   const method = request.method
   const corsMethod = request.headers['access-control-request-method']
   if (config.config.http.prefix) {
     if (!path.startsWith(config.config.http.prefix)) {
       logger.log(`url doesn't match the prefix.`, {
+        requestID,
         url: request.url,
         prefix: config.config.http.prefix,
       })
@@ -86,6 +92,7 @@ function getConfig(ctx: THttpCtx): THttpCtx {
     ctx.config = functionConfig
   } else {
     logger.log(`unknown http function.`, {
+      requestID,
       url: request.url,
       method,
       corsMethod,
@@ -98,8 +105,9 @@ function getConfig(ctx: THttpCtx): THttpCtx {
 
 function sendReply(ctx: THttpCtx): void {
   if (ctx.response.writableEnded) return
-  const { response, result, payload } = ctx
+  const { requestID, response, result, payload } = ctx
   logger.log(`send http reply.`, {
+    requestID,
     url: payload.url,
     result,
   })

@@ -20,9 +20,10 @@ function beforeHandler(
   ctx: THttpCtx,
   headers: Record<string, string | string[]> | undefined
 ): void {
-  const { payload, response, config } = ctx
+  const { requestID, payload, response, config } = ctx
   if (config.method !== 'OPTIONS' && payload.method === 'OPTIONS') {
     logger.log(`cors OPTIONS handled.`, {
+      requestID,
       url: payload.url,
       headers,
     })

@@ -5,8 +5,9 @@ import { THttpCtx, THttpPayload, THttpBody } from '@type/http.type'
 
 export async function getPayload(ctx: THttpCtx): Promise<THttpCtx> {
   if (ctx.response.writableEnded) return ctx
-  const { request } = ctx
+  const { requestID, request } = ctx
   const payload: THttpPayload = {
+    requestID,
     aborted: request.aborted,
     httpVersion: request.httpVersion,
     httpVersionMajor: request.httpVersionMajor,
@@ -23,12 +24,13 @@ export async function getPayload(ctx: THttpCtx): Promise<THttpCtx> {
     body: Buffer.from([]),
   }
 
-  const [ip, ips] = getIp(request)
+  const [ip, ips] = getIp(ctx)
   payload.ip = ip
   payload.ips = ips
-  payload.body = await getBody(request)
+  payload.body = await getBody(ctx)
 
   logger.log('http function payload.', {
+    requestID,
     url: request.url,
     payload,
   })
@@ -37,7 +39,8 @@ export async function getPayload(ctx: THttpCtx): Promise<THttpCtx> {
   return ctx
 }
 
-function getIp(request: http.IncomingMessage): [string, string[]] {
+function getIp(ctx: THttpCtx): [string, string[]] {
+  const { request } = ctx
   let ip = '',
     ips = []
 
@@ -56,12 +59,14 @@ function getIp(request: http.IncomingMessage): [string, string[]] {
   return [ip, ips]
 }
 
-function getBody(request: http.IncomingMessage): Promise<THttpBody> {
+function getBody(ctx: THttpCtx): Promise<THttpBody> {
   return new Promise((resolve, reject) => {
+    const { requestID, request } = ctx
     const body = []
     request
       .on('error', (e) => {
         logger.log(`getPayload error. ${e}`, {
+          requestID,
           url: request.url,
           stack: e.stack,
         })
