@@ -1,4 +1,5 @@
 import http from 'http'
+import { handle } from './handle'
 
 export type THttpBody = Record<string, unknown> | Buffer
 export type THttpPayload = Pick<
@@ -32,12 +33,5 @@ export type THttpResult = {
 export function handleHttp(
   handler: (payload: THttpPayload) => THttpResult | Promise<THttpResult>
 ): void {
-  process.on('message', (payload) => {
-    const result = handler(payload as THttpPayload)
-    const p = result instanceof Promise ? result : Promise.resolve(result)
-    p.then((r) => {
-      process.send(r)
-      process.disconnect()
-    })
-  })
+  handle(handler)
 }

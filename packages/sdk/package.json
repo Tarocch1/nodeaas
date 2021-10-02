@@ -11,7 +11,7 @@
   },
   "bugs": "https://github.com/Tarocch1/nodeaas/issues",
   "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "types": "./index.d.ts",
   "files": [
     "dist"
   ],
@@ -21,7 +21,11 @@
   },
   "devDependencies": {
     "@types/node": "^16.9.6",
+    "@types/uuid": "^8.3.1",
     "@vercel/ncc": "^0.31.1",
     "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "uuid": "^8.3.2"
   }
 }
