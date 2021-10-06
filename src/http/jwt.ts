@@ -2,7 +2,6 @@ import { URL } from 'url'
 import { serialize, parse } from 'cookie'
 import crypto from 'crypto'
 import dayjs from 'dayjs'
-import base64url from 'base64url'
 import { config as globalConfig } from '@src/lib/config'
 import { logger } from '@src/http'
 import { setHeaders } from '@src/http/utils'
@@ -53,7 +52,7 @@ function afterHandler(ctx: THttpCtx): void {
         })
         return
       }
-      const token = sign(JSON.stringify(result.jwt))
+      const token = sign(JSON.stringify(result.jwt || {}))
       const cookie = serialize(
         globalConfig.config.http.jwt.name,
         token,
@@ -86,14 +85,14 @@ function verify(ctx: THttpCtx): boolean {
       if (headerStr && payloadStr && signature) {
         const hmac = crypto.createHmac(
           'sha256',
-          base64url.toBuffer(globalConfig.config.http.jwt.key)
+          Buffer.from(globalConfig.config.http.jwt.key, 'base64url')
         )
-        const calculated = base64url.fromBase64(
-          hmac.update([headerStr, payloadStr].join('.')).digest('base64')
-        )
+        const calculated = hmac
+          .update([headerStr, payloadStr].join('.'))
+          .digest('base64url')
         if (calculated === signature) {
           const jwtPayload: Record<string, unknown> = JSON.parse(
-            base64url.decode(payloadStr)
+            Buffer.from(payloadStr, 'base64url').toString('utf-8')
           )
           const { exp, nbf } = jwtPayload
           const now = dayjs().unix()
@@ -107,6 +106,7 @@ function verify(ctx: THttpCtx): boolean {
     return false
   } catch (e) {
     logger.log(`jwt verify error. ${e}`, {
+      requestID: ctx.payload.requestID,
       url: ctx.payload.url,
     })
     return false
@@ -139,14 +139,16 @@ function sign(jwtPayload: string): string {
     alg: 'HS256',
     typ: 'JWT',
   }
-  const headerStr = base64url.encode(JSON.stringify(header))
-  const payloadStr = base64url.encode(jwtPayload)
+  const headerStr = Buffer.from(JSON.stringify(header), 'utf-8').toString(
+    'base64url'
+  )
+  const payloadStr = Buffer.from(jwtPayload, 'utf-8').toString('base64url')
   const hmac = crypto.createHmac(
     'sha256',
-    base64url.toBuffer(globalConfig.config.http.jwt.key)
+    Buffer.from(globalConfig.config.http.jwt.key, 'base64url')
   )
-  const signature = base64url.fromBase64(
-    hmac.update([headerStr, payloadStr].join('.')).digest('base64')
-  )
+  const signature = hmac
+    .update([headerStr, payloadStr].join('.'))
+    .digest('base64url')
   return [headerStr, payloadStr, signature].join('.')
 }

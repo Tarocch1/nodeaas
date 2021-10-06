@@ -38,7 +38,6 @@
     ]
   },
   "dependencies": {
-    "base64url": "^3.0.1",
     "commander": "^8.2.0",
     "cookie": "^0.4.1",
     "cron-parser": "^4.0.0",
